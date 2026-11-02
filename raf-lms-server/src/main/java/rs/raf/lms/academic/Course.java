@@ -7,6 +7,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import rs.raf.lms.user.AppUser;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "courses")
@@ -22,6 +29,15 @@ public class Course {
     @Column(nullable = false, length = 150)
     private String name;
 
+    @ManyToMany//jedan nastavnik drži više predmeta i da jedan predmet ima više nastavnika.
+    @JoinTable(
+            name = "course_teachers",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    //@JoinTable kaže da se veza čuva u posebnoj tabeli course_teachers sa dve kolone.
+    private Set<AppUser> teachers = new HashSet<>();
+
     protected Course() {
     }
 
@@ -30,6 +46,10 @@ public class Course {
         this.name = name;
     }
 
+    public Set<AppUser> getTeachers() { return Collections.unmodifiableSet(teachers); }
+    public void addTeacher(AppUser teacher) { teachers.add(teacher); }
+    public void removeTeacher(AppUser teacher) { teachers.remove(teacher); }
+    //Getter vraća samo čitljiv skup, pa se izmena radi samo kroz addTeacher i removeTeacher.
     public Long getId() {
         return id;
     }

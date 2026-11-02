@@ -1,16 +1,10 @@
 
 package rs.raf.lms.submission;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import rs.raf.lms.assignment.Assignment;
 import rs.raf.lms.exam.ExamAttempt;
 
@@ -32,6 +26,12 @@ public class Submission {
     @JoinColumn(name = "assignment_id", nullable = false)
     private Assignment assignment;
 
+    // AUTOSAVE = automatsko međusnimanje, FINAL = konačna predaja (važi poslednja FINAL)
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(nullable = false, length = 20)
+    private SubmissionKind kind;
+
     @Column(name = "original_file_name", nullable = false, length = 255)
     private String originalFileName;
 
@@ -46,15 +46,25 @@ public class Submission {
 
     public Submission(ExamAttempt examAttempt,
                       Assignment assignment,
+                      SubmissionKind kind,
                       String originalFileName,
                       String storageKey,
                       LocalDateTime submittedAt) {
 
         this.examAttempt = examAttempt;
         this.assignment = assignment;
+        this.kind = kind;
         this.originalFileName = originalFileName;
         this.storageKey = storageKey;
         this.submittedAt = submittedAt;
+    }
+
+    public SubmissionKind getKind() {
+        return kind;
+    }
+
+    public void setKind(SubmissionKind kind) {
+        this.kind = kind;
     }
 
     public Long getId() {

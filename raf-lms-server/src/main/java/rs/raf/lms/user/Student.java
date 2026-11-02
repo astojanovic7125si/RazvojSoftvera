@@ -26,21 +26,12 @@ public class Student {
     @Column(name = "index_number", nullable = false, unique = true, length = 30)
     private String indexNumber;
 
-    @Column(name = "first_name", nullable = false, length = 100)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false, length = 100)
-    private String lastName;
-
     protected Student() {
     }
 
-    public Student(AppUser user, String indexNumber,
-                   String firstName, String lastName) {
+    public Student(AppUser user, String indexNumber) {
         this.user = user;
         this.indexNumber = indexNumber;
-        this.firstName = firstName;
-        this.lastName = lastName;
     }
 
     public Long getId() {
@@ -61,21 +52,5 @@ public class Student {
 
     public void setIndexNumber(String indexNumber) {
         this.indexNumber = indexNumber;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 }

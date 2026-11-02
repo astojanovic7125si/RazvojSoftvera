@@ -10,7 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-
+import jakarta.persistence.Column;
 import rs.raf.lms.user.Student;
 
 @Entity
@@ -39,12 +39,23 @@ public class ExamRegistration {
     @JoinColumn(name = "exam_group_id")
     private ExamGroup examGroup;
 
+    @Column(name = "classroom", length = 50)
+    private String classroom;
+
     protected ExamRegistration() {
     }
 
     public ExamRegistration(Student student, ExamSession examSession) {
         this.student = student;
         this.examSession = examSession;
+    }
+
+    public String getClassroom() {
+        return classroom;
+    }
+
+    public void setClassroom(String classroom) {
+        this.classroom = classroom;
     }
 
     public Long getId() {
@@ -75,3 +86,4 @@ public class ExamRegistration {
         this.examGroup = examGroup;
     }
 }
+//Zadatak traži da se rešenja biraju i po učionici, a učionica se čuva po studentu.

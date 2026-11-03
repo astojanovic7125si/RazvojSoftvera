@@ -11,6 +11,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Column;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import rs.raf.lms.user.Student;
 
 @Entity
@@ -21,6 +24,8 @@ import rs.raf.lms.user.Student;
                 columnNames = {"student_id", "exam_session_id"}
         )
 )
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ExamRegistration {
 
     @Id
@@ -42,48 +47,9 @@ public class ExamRegistration {
     @Column(name = "classroom", length = 50)
     private String classroom;
 
-    protected ExamRegistration() {
-    }
-
     public ExamRegistration(Student student, ExamSession examSession) {
         this.student = student;
         this.examSession = examSession;
-    }
-
-    public String getClassroom() {
-        return classroom;
-    }
-
-    public void setClassroom(String classroom) {
-        this.classroom = classroom;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public ExamSession getExamSession() {
-        return examSession;
-    }
-
-    public void setExamSession(ExamSession examSession) {
-        this.examSession = examSession;
-    }
-
-    public ExamGroup getExamGroup() {
-        return examGroup;
-    }
-
-    public void setExamGroup(ExamGroup examGroup) {
-        this.examGroup = examGroup;
     }
 }
 //Zadatak traži da se rešenja biraju i po učionici, a učionica se čuva po studentu.

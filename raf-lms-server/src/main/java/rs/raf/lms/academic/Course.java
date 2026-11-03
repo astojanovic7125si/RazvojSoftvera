@@ -10,6 +10,9 @@ import jakarta.persistence.Table;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import rs.raf.lms.user.AppUser;
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,6 +20,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "courses")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Course {
 
     @Id
@@ -38,35 +43,19 @@ public class Course {
     //@JoinTable kaže da se veza čuva u posebnoj tabeli course_teachers sa dve kolone.
     private Set<AppUser> teachers = new HashSet<>();
 
-    protected Course() {
-    }
-
     public Course(String code, String name) {
         this.code = code;
         this.name = name;
     }
 
-    public Set<AppUser> getTeachers() { return Collections.unmodifiableSet(teachers); }
-    public void addTeacher(AppUser teacher) { teachers.add(teacher); }
-    public void removeTeacher(AppUser teacher) { teachers.remove(teacher); }
+    public Set<AppUser> getTeachers() {
+        return Collections.unmodifiableSet(teachers);
+    }
+    public void addTeacher(AppUser teacher) {
+        teachers.add(teacher);
+    }
+    public void removeTeacher(AppUser teacher) {
+        teachers.remove(teacher);
+    }
     //Getter vraća samo čitljiv skup, pa se izmena radi samo kroz addTeacher i removeTeacher.
-    public Long getId() {
-        return id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

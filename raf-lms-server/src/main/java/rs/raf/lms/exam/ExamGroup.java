@@ -11,6 +11,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(
@@ -20,6 +23,8 @@ import jakarta.persistence.UniqueConstraint;
                 columnNames = {"exam_session_id", "name"}
         )
 )
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ExamGroup {
 
     @Id
@@ -33,31 +38,8 @@ public class ExamGroup {
     @Column(nullable = false, length = 50)
     private String name;
 
-    protected ExamGroup() {
-    }
-
     public ExamGroup(ExamSession examSession, String name) {
         this.examSession = examSession;
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public ExamSession getExamSession() {
-        return examSession;
-    }
-
-    public void setExamSession(ExamSession examSession) {
-        this.examSession = examSession;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 }

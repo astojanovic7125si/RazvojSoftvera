@@ -11,12 +11,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import rs.raf.lms.academic.Course;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "exam_sessions")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ExamSession {
 
     @Id
@@ -41,9 +47,6 @@ public class ExamSession {
     private BigDecimal maxPoints;
     //Ocena ne sme da pređe maksimum termina. Bez ove kolone server nema sa čim da je uporedi.
 
-    protected ExamSession() {
-    }
-
     public ExamSession(Course course, ExamPeriod examPeriod,
                        LocalDateTime startTime, LocalDateTime endTime, BigDecimal maxPoints) {
         this.course = course;
@@ -51,48 +54,5 @@ public class ExamSession {
         this.startTime = startTime;
         this.endTime = endTime;
         this.maxPoints = maxPoints;
-    }
-
-    public BigDecimal getMaxPoints() {
-        return maxPoints;
-    }
-    public void setMaxPoints(BigDecimal maxPoints) {
-        this.maxPoints = maxPoints;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    public ExamPeriod getExamPeriod() {
-        return examPeriod;
-    }
-
-    public void setExamPeriod(ExamPeriod examPeriod) {
-        this.examPeriod = examPeriod;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
     }
 }

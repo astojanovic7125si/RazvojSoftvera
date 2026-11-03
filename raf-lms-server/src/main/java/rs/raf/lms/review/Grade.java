@@ -8,6 +8,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.Length;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -21,6 +24,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "grades")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Grade {
 
     @Id
@@ -45,9 +50,6 @@ public class Grade {
     @Column(name = "graded_at", nullable = false)
     private LocalDateTime gradedAt;
 
-    protected Grade() {
-    }
-
     public Grade(ExamAttempt examAttempt,
                  AppUser gradedBy,
                  BigDecimal points,
@@ -59,37 +61,5 @@ public class Grade {
         this.points = points;
         this.feedback = feedback;
         this.gradedAt = gradedAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public ExamAttempt getExamAttempt() {
-        return examAttempt;
-    }
-
-    public AppUser getGradedBy() {
-        return gradedBy;
-    }
-
-    public BigDecimal getPoints() {
-        return points;
-    }
-
-    public void setPoints(BigDecimal points) {
-        this.points = points;
-    }
-
-    public String getFeedback() {
-        return feedback;
-    }
-
-    public void setFeedback(String feedback) {
-        this.feedback = feedback;
-    }
-
-    public LocalDateTime getGradedAt() {
-        return gradedAt;
     }
 }

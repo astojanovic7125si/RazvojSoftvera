@@ -8,11 +8,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "app_users")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)   // konstruktor koji zahteva JPA
 public class AppUser {
 
     @Id
@@ -35,10 +40,6 @@ public class AppUser {
 
     @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
-
-    // Konstruktor koji zahteva JPA
-    protected AppUser() {
-    }
 
     // Konstruktor za kreiranje korisničkog naloga
     public AppUser(String username, String passwordHash, Role role,
@@ -80,15 +81,4 @@ public class AppUser {
         return passwordHash;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }

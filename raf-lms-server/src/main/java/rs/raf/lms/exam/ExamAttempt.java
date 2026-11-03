@@ -10,11 +10,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "exam_attempts")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ExamAttempt {
 
     @Id
@@ -32,32 +37,9 @@ public class ExamAttempt {
     @Column(name = "finished_at")
     private LocalDateTime finishedAt;
 
-    protected ExamAttempt() {
-    }
-
     public ExamAttempt(ExamRegistration examRegistration,
                        LocalDateTime startedAt) {
         this.examRegistration = examRegistration;
         this.startedAt = startedAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public ExamRegistration getExamRegistration() {
-        return examRegistration;
-    }
-
-    public LocalDateTime getStartedAt() {
-        return startedAt;
-    }
-
-    public LocalDateTime getFinishedAt() {
-        return finishedAt;
-    }
-
-    public void setFinishedAt(LocalDateTime finishedAt) {
-        this.finishedAt = finishedAt;
     }
 }

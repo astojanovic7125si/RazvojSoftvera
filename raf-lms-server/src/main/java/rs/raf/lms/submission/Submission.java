@@ -3,15 +3,20 @@ package rs.raf.lms.submission;
 
 import jakarta.persistence.*;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import rs.raf.lms.assignment.Assignment;
 import rs.raf.lms.exam.ExamAttempt;
 
 import java.time.LocalDateTime;
-
+//// Predaja je nepromenljiva (nema setera): AUTOSAVE i FINAL se samo dodaju, nikad ne menjaju.
 @Entity
 @Table(name = "submissions")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Submission {
 
     @Id
@@ -41,9 +46,6 @@ public class Submission {
     @Column(name = "submitted_at", nullable = false)
     private LocalDateTime submittedAt;
 
-    protected Submission() {
-    }
-
     public Submission(ExamAttempt examAttempt,
                       Assignment assignment,
                       SubmissionKind kind,
@@ -57,37 +59,5 @@ public class Submission {
         this.originalFileName = originalFileName;
         this.storageKey = storageKey;
         this.submittedAt = submittedAt;
-    }
-
-    public SubmissionKind getKind() {
-        return kind;
-    }
-
-    public void setKind(SubmissionKind kind) {
-        this.kind = kind;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public ExamAttempt getExamAttempt() {
-        return examAttempt;
-    }
-
-    public Assignment getAssignment() {
-        return assignment;
-    }
-
-    public String getOriginalFileName() {
-        return originalFileName;
-    }
-
-    public String getStorageKey() {
-        return storageKey;
-    }
-
-    public LocalDateTime getSubmittedAt() {
-        return submittedAt;
     }
 }

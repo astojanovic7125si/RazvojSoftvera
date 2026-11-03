@@ -8,6 +8,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.Length;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -19,6 +22,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "code_comments")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CodeComment {
 
     @Id
@@ -45,9 +50,6 @@ public class CodeComment {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    protected CodeComment() {
-    }
-
     public CodeComment(Submission submission,
                        AppUser author,
                        String filePath,
@@ -61,37 +63,5 @@ public class CodeComment {
         this.lineNumber = lineNumber;
         this.content = content;
         this.createdAt = createdAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Submission getSubmission() {
-        return submission;
-    }
-
-    public AppUser getAuthor() {
-        return author;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public int getLineNumber() {
-        return lineNumber;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
     }
 }

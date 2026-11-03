@@ -10,9 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "students")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Student {
 
     @Id
@@ -26,31 +31,8 @@ public class Student {
     @Column(name = "index_number", nullable = false, unique = true, length = 30)
     private String indexNumber;
 
-    protected Student() {
-    }
-
     public Student(AppUser user, String indexNumber) {
         this.user = user;
-        this.indexNumber = indexNumber;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public AppUser getUser() {
-        return user;
-    }
-
-    public void setUser(AppUser user) {
-        this.user = user;
-    }
-
-    public String getIndexNumber() {
-        return indexNumber;
-    }
-
-    public void setIndexNumber(String indexNumber) {
         this.indexNumber = indexNumber;
     }
 }

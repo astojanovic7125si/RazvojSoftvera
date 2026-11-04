@@ -14,6 +14,7 @@ import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import rs.raf.lms.user.Student;
 
 @Entity
@@ -25,6 +26,7 @@ import rs.raf.lms.user.Student;
         )
 )
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ExamRegistration {
 

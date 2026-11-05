@@ -24,7 +24,7 @@ import java.util.List;
 import java.math.BigDecimal;
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "app.seed.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "app.seed.enabled", havingValue = "true", matchIfMissing = false)
 public class Seeder implements CommandLineRunner {
     private final AppUserRepository appUserRepository;
     private final AssignmentRepository assignmentRepository;

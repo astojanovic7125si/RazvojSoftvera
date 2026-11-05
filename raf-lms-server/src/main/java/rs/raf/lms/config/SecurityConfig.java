@@ -2,25 +2,87 @@ package rs.raf.lms.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration//fabrika sa podesavanjima
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
-    @Bean//ono sto se vrati je objekat kojim Spring upravlja
-        //Napravi ga jednom i daje svakom kome zatreba
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
-        //PasswordEncoder – to je zvanični Spring interfejs (šablon) zadužen za rad sa lozinkama.
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        //DelegatingPasswordEncoder->
-        // za novu lozinku: koristi trenutno najbolje standarde
-        //za proveru stare lozinke: pogleda kako je ta lozinka ranije bila u bazi.Ako je sačuvana preko starog algoritma,
-        // on će znati da upotrebi taj stari algoritam da je proveri; ako je nova, koristiće novi.
+
+        return PasswordEncoderFactories
+                .createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            JwtAuthenticationConverter jwtConverter
+    ) throws Exception {
+
+        http
+                .csrf(csrf -> csrf.disable())
+
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        )
+                )
+
+                .authorizeHttpRequests(auth -> auth
+
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/auth/login"
+                        ).permitAll()
+
+                        .requestMatchers("/api/teacher/**")
+                        .hasRole("TEACHER")
+
+                        .requestMatchers("/api/student/**")
+                        .hasRole("STUDENT")
+
+                        .anyRequest().denyAll()
+                )
+
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt
+                                .jwtAuthenticationConverter(jwtConverter)
+                        )
+                );
+
+        return http.build();
+    }
+
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+
+        JwtGrantedAuthoritiesConverter authoritiesConverter =
+                new JwtGrantedAuthoritiesConverter();
+
+        authoritiesConverter.setAuthoritiesClaimName("role");
+        authoritiesConverter.setAuthorityPrefix("ROLE_");
+
+        JwtAuthenticationConverter jwtConverter =
+                new JwtAuthenticationConverter();
+
+        jwtConverter.setJwtGrantedAuthoritiesConverter(
+                authoritiesConverter
+        );
+
+        return jwtConverter;
     }
 }
-//Seeder: passwordEncoder.encode("lozinka123") → heš → AppUser.passwordHash → baza
-//Prijava: korisnik pošalje username + lozinku
-//            AuthService: nađe AppUser po username-u
-//                         passwordEncoder.matches(lozinka, user.getPasswordHash())
-//                            tačno   →  napravi token (JWT)
-//                            netačno →  401 Unauthorized

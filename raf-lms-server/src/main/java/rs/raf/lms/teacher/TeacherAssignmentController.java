@@ -4,6 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.Resource;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -21,7 +26,10 @@ import rs.raf.lms.teacher.dto.TeacherAssignmentResponse;
 import org.springframework.web.bind.annotation.PutMapping;
 import rs.raf.lms.teacher.dto.UpdateAssignmentRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -30,6 +38,42 @@ import java.util.List;
 public class TeacherAssignmentController {
 
     private final TeacherAssignmentService teacherAssignmentService;
+
+    // UPLOAD PRIPREMLJENOG SOFTVERSKOG PROJEKTA U ZIP FORMATU
+    @PostMapping(value = "/{assignmentId}/project", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public TeacherAssignmentResponse uploadProject(
+            @PathVariable Long courseId,
+            @PathVariable Long sessionId,
+            @PathVariable Long assignmentId,
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam("file") MultipartFile file
+    ) {
+        return teacherAssignmentService.uploadProject(
+                jwt.getSubject(), courseId, sessionId, assignmentId, file
+        );
+    }
+
+    // PREUZIMANJE ZIP-A KOJI JE NASTAVNIK POSTAVIO
+    @GetMapping("/{assignmentId}/project")
+    public ResponseEntity<Resource> downloadProject(
+            @PathVariable Long courseId,
+            @PathVariable Long sessionId,
+            @PathVariable Long assignmentId,
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        TeacherAssignmentService.ProjectFile project = teacherAssignmentService.downloadProject(
+                jwt.getSubject(), courseId, sessionId, assignmentId
+        );
+
+        ContentDisposition disposition = ContentDisposition.attachment()
+                .filename(project.originalFileName(), StandardCharsets.UTF_8)
+                .build();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/zip"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
+                .body(project.resource());
+    }
 
     // KREIRANJE ZADATKA
     @PostMapping

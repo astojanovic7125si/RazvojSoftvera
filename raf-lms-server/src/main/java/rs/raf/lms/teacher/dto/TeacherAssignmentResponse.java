@@ -6,7 +6,8 @@ public record TeacherAssignmentResponse(
         Long examSessionId,
         Long examGroupId,
         String title,
-        String description
+        String description,
+        String projectFileName
 
 ) {
 }

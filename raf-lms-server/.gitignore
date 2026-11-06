@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Lokalno sacuvani ZIP projekti zadataka i studentskih resenja
+/storage/

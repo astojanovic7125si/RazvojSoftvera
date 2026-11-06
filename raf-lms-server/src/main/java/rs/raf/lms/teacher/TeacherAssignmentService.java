@@ -3,8 +3,10 @@ package rs.raf.lms.teacher;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import rs.raf.lms.assignment.Assignment;
@@ -21,6 +23,7 @@ import rs.raf.lms.teacher.dto.CreateAssignmentRequest;
 import rs.raf.lms.teacher.dto.TeacherAssignmentResponse;
 import rs.raf.lms.teacher.dto.UpdateAssignmentRequest;
 import rs.raf.lms.repositories.SubmissionRepository;
+import rs.raf.lms.storage.ProjectStorageService;
 
 import rs.raf.lms.user.AppUser;
 import rs.raf.lms.user.Role;
@@ -38,6 +41,51 @@ public class TeacherAssignmentService {
     private final ExamGroupRepository examGroupRepository;
     private final AssignmentRepository assignmentRepository;
     private final SubmissionRepository submissionRepository;
+    private final ProjectStorageService projectStorageService;
+
+    // POSTAVLJANJE ZIP PROJEKTA ZA POSTOJECI ZADATAK
+    public TeacherAssignmentResponse uploadProject(
+            String username, Long courseId, Long sessionId,
+            Long assignmentId, MultipartFile file
+    ) {
+        Assignment assignment = requireAuthorizedAssignment(
+                username, courseId, sessionId, assignmentId
+        );
+
+        if (assignment.getStorageKey() != null) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Zadatak vec ima ZIP projekat"
+            );
+        }
+
+        ProjectStorageService.StoredProject stored = projectStorageService.storeZip(file);
+        assignment.setOriginalFileName(stored.originalFileName());
+        assignment.setStorageKey(stored.storageKey());
+
+        return toResponse(assignmentRepository.save(assignment));
+    }
+
+    // PREUZIMANJE ZIP PROJEKTA (SAMO NASTAVNIK TOG PREDMETA)
+    @Transactional(readOnly = true)
+    public ProjectFile downloadProject(
+            String username, Long courseId, Long sessionId, Long assignmentId
+    ) {
+        Assignment assignment = requireAuthorizedAssignment(
+                username, courseId, sessionId, assignmentId
+        );
+
+        if (assignment.getStorageKey() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Zadatak nema postavljen ZIP projekat"
+            );
+        }
+
+        Resource resource = projectStorageService.loadZip(assignment.getStorageKey());
+        return new ProjectFile(resource, assignment.getOriginalFileName());
+    }
+
+    public record ProjectFile(Resource resource, String originalFileName) {
+    }
 
     // KREIRANJE ZADATKA
     public TeacherAssignmentResponse createAssignment(
@@ -195,6 +243,16 @@ public class TeacherAssignmentService {
     }
 
     // ZAJEDNICKA PROVERA PRISTUPA
+    private Assignment requireAuthorizedAssignment(
+            String username, Long courseId, Long sessionId, Long assignmentId
+    ) {
+        requireAuthorizedSession(username, courseId, sessionId);
+        return assignmentRepository.findByIdAndExamSessionId(assignmentId, sessionId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Zadatak ne postoji u ovom terminu"
+                ));
+    }
+
     private ExamSession requireAuthorizedSession(
             String username,
             Long courseId,
@@ -244,7 +302,8 @@ public class TeacherAssignmentService {
                 assignment.getExamSession().getId(),
                 groupId,
                 assignment.getTitle(),
-                assignment.getDescription()
+                assignment.getDescription(),
+                assignment.getOriginalFileName()
         );
     }
 }

@@ -14,4 +14,5 @@ public interface SubmissionRepository extends JpaRepository<Submission,Long> {
     Optional<Submission> findFirstByExamAttemptIdAndKindOrderBySubmittedAtDesc(Long examAttemptId, SubmissionKind kind);
     // Sve predaje pokušaja, od najstarije do najnovije (istorija)
     List<Submission> findByExamAttemptIdOrderBySubmittedAtAsc(Long examAttemptId);
+    boolean existsByAssignment_Id(Long assignmentId);
 }

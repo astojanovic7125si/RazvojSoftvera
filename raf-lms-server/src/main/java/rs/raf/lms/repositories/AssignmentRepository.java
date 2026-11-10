@@ -2,9 +2,8 @@ package rs.raf.lms.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 import org.springframework.data.repository.query.Param;
-import rs.raf.lms.assignment.Assignment;
+import rs.raf.lms.model.Assignment;
 
 import java.util.List;
 import java.util.Optional;

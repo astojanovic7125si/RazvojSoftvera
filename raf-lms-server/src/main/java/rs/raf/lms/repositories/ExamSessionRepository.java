@@ -1,7 +1,7 @@
 package rs.raf.lms.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import rs.raf.lms.exam.ExamSession;
+import rs.raf.lms.model.ExamSession;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package rs.raf.lms.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import rs.raf.lms.review.Grade;
+import rs.raf.lms.model.Grade;
 
 import java.util.List;
 import java.util.Optional;

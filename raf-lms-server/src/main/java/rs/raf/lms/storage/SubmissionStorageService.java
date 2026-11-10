@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import rs.raf.lms.exceptions.BadRequestException;
+import rs.raf.lms.exceptions.InternalServerException;
+import rs.raf.lms.exceptions.ResourceNotFoundException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,18 +38,14 @@ public class SubmissionStorageService {
     public StoredSubmission storeZip(MultipartFile file) {
 
         if (file == null || file.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "ZIP resenje nije poslato"
+            throw new BadRequestException("ZIP resenje nije poslato"
             );
         }
 
         String originalName = file.getOriginalFilename();
 
         if (originalName == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Fajl nema naziv"
+            throw new BadRequestException("Fajl nema naziv"
             );
         }
 
@@ -58,9 +57,7 @@ public class SubmissionStorageService {
         if (originalName.length() > 255 ||
                 !originalName.toLowerCase(Locale.ROOT).endsWith(".zip")) {
 
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Dozvoljen je samo ZIP fajl"
+            throw new BadRequestException("Dozvoljen je samo ZIP fajl"
             );
         }
 
@@ -89,9 +86,7 @@ public class SubmissionStorageService {
 
                 Files.deleteIfExists(target);
 
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Poslato resenje nije ispravna ZIP arhiva"
+                throw new BadRequestException("Poslato resenje nije ispravna ZIP arhiva"
                 );
             }
 
@@ -102,11 +97,7 @@ public class SubmissionStorageService {
 
         } catch (IOException exception) {
 
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Neuspesno cuvanje resenja",
-                    exception
-            );
+            throw new InternalServerException("Neuspesno cuvanje resenja", exception);
         }
     }
 
@@ -116,9 +107,7 @@ public class SubmissionStorageService {
         Path file = resolveStoredFile(storageKey);
 
         if (!Files.isRegularFile(file)) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Resenje nije pronadjeno"
+            throw new ResourceNotFoundException("Resenje nije pronadjeno"
             );
         }
 
@@ -135,11 +124,7 @@ public class SubmissionStorageService {
 
         } catch (IOException exception) {
 
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Neuspesno brisanje privremene predaje",
-                    exception
-            );
+            throw new InternalServerException("Neuspesno brisanje privremene predaje", exception);
         }
     }
 
@@ -149,9 +134,7 @@ public class SubmissionStorageService {
         if (storageKey == null ||
                 !storageKey.matches("[0-9a-fA-F-]{36}\\.zip")) {
 
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Resenje nije pronadjeno"
+            throw new ResourceNotFoundException("Resenje nije pronadjeno"
             );
         }
 
@@ -160,9 +143,7 @@ public class SubmissionStorageService {
                 .normalize();
 
         if (!file.startsWith(submissionDirectory)) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Resenje nije pronadjeno"
+            throw new ResourceNotFoundException("Resenje nije pronadjeno"
             );
         }
 

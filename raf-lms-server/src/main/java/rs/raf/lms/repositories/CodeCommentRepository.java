@@ -1,7 +1,7 @@
 package rs.raf.lms.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import rs.raf.lms.review.CodeComment;
+import rs.raf.lms.model.CodeComment;
 
 import java.util.List;
 

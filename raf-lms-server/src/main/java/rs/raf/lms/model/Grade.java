@@ -1,20 +1,11 @@
 
 package rs.raf.lms.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Length;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -54,6 +45,13 @@ public class Grade {
                  LocalDateTime gradedAt) {
 
         this.examAttempt = examAttempt;
+        this.gradedBy = gradedBy;
+        this.points = points;
+        this.feedback = feedback;
+        this.gradedAt = gradedAt;
+    }
+    // Ponovno ocenjivanje: menja postojeću ocenu umesto da pravi novu
+    public void update(AppUser gradedBy, BigDecimal points, String feedback, LocalDateTime gradedAt) {
         this.gradedBy = gradedBy;
         this.points = points;
         this.feedback = feedback;

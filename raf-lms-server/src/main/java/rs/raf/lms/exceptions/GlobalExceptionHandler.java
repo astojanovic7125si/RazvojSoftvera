@@ -1,5 +1,6 @@
 package rs.raf.lms.exceptions;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -61,5 +62,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .badRequest()
                 .body(Map.of("message", "Zahtev nije ispravan JSON"));
+    }
+    // Unique ograničenje u bazi, npr. dva istovremena zahteva za isti podatak
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleIntegrity(
+            DataIntegrityViolationException exception
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of("message", "Podatak već postoji ili je u konfliktu sa postojećim podacima"));
     }
 }

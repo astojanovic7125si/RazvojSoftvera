@@ -1,30 +1,15 @@
 package rs.raf.lms.student.services;
 
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-
 import rs.raf.lms.exceptions.ForbiddenException;
 import rs.raf.lms.exceptions.ResourceNotFoundException;
-import rs.raf.lms.model.Assignment;
-
-import rs.raf.lms.model.ExamAttempt;
-import rs.raf.lms.model.ExamRegistration;
-import rs.raf.lms.model.ExamSession;
-
-import rs.raf.lms.repositories.AssignmentRepository;
-import rs.raf.lms.repositories.ExamAttemptRepository;
-import rs.raf.lms.repositories.ExamRegistrationRepository;
-import rs.raf.lms.repositories.ExamSessionRepository;
-import rs.raf.lms.repositories.StudentRepository;
-
+import rs.raf.lms.model.*;
+import rs.raf.lms.repositories.*;
 import rs.raf.lms.storage.ProjectStorageService;
 import rs.raf.lms.student.dto.response.StudentAssignmentResponse;
-import rs.raf.lms.model.Student;
 
 import java.time.LocalDateTime;
 import java.util.List;

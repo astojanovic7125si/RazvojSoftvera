@@ -6,22 +6,15 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import rs.raf.lms.model.Course;
-import rs.raf.lms.model.Assignment;
-import rs.raf.lms.model.ExamGroup;
-import rs.raf.lms.model.ExamPeriod;
-import rs.raf.lms.model.ExamRegistration;
-import rs.raf.lms.model.ExamSession;
+import rs.raf.lms.model.*;
 import rs.raf.lms.repositories.*;
-import rs.raf.lms.model.AppUser;
-import rs.raf.lms.model.Role;
-import rs.raf.lms.model.Student;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.math.BigDecimal;
+
 @Component
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "app.seed.enabled", havingValue = "true", matchIfMissing = false)

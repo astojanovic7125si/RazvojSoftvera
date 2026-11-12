@@ -23,4 +23,16 @@ public interface ExamRegistrationRepository extends JpaRepository<ExamRegistrati
             order by s.indexNumber
             """)
     List<ExamRegistration> findAllWithDetailsBySessionId(@Param("sessionId") Long sessionId);
+
+    // Sve prijave jednog studenta (termin, predmet, rok i grupa), najnoviji termin prvi
+    @Query("""
+            select r from ExamRegistration r
+            join fetch r.examSession es
+            join fetch es.course
+            join fetch es.examPeriod
+            left join fetch r.examGroup
+            where r.student.user.username = :username
+            order by es.startTime desc
+            """)
+    List<ExamRegistration> findAllForStudent(@Param("username") String username);
 }

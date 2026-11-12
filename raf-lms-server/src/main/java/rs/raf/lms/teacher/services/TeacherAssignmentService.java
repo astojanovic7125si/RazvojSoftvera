@@ -20,9 +20,7 @@ import java.util.List;
 @Transactional
 public class TeacherAssignmentService {
 
-    private final AppUserRepository appUserRepository;
-    private final CourseRepository courseRepository;
-    private final ExamSessionRepository examSessionRepository;
+    private final TeacherAccessService teacherAccessService;
     private final ExamGroupRepository examGroupRepository;
     private final AssignmentRepository assignmentRepository;
     private final SubmissionRepository submissionRepository;
@@ -230,28 +228,7 @@ public class TeacherAssignmentService {
             Long courseId,
             Long sessionId
     ) {
-
-        AppUser teacher = appUserRepository.findByUsername(username)
-                .orElseThrow(() -> new UnauthorizedException("Korisnik ne postoji"
-                ));
-
-        if (teacher.getRole() != Role.TEACHER) {
-            throw new ForbiddenException("Pristup je dozvoljen samo nastavnicima"
-            );
-        }
-
-        if (!courseRepository.existsByIdAndTeachers_Id(
-                courseId,
-                teacher.getId()
-        )) {
-            throw new ForbiddenException("Nastavnik ne predaje ovaj predmet"
-            );
-        }
-
-        return examSessionRepository
-                .findByIdAndCourseId(sessionId, courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Ispitni termin ne postoji za ovaj predmet"
-                ));
+        return teacherAccessService.requireAuthorizedSession(username, courseId, sessionId);
     }
 
     // PRETVARANJE ENTITETA U DTO

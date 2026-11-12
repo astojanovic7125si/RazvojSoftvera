@@ -23,14 +23,21 @@ public class TeacherAccessService {
     private final CourseRepository courseRepository;
     private final ExamSessionRepository examSessionRepository;
 
-    // Provera: korisnik postoji (401), nastavnik je (403), predaje taj predmet (403).
-    public Course requireAuthorizedCourse(String username, Long courseId) {
+    // Korisnik postoji (401) i nastavnik je (403).
+    public AppUser requireTeacher(String username) {
         AppUser teacher = appUserRepository.findByUsername(username)
                 .orElseThrow(() -> new UnauthorizedException("Korisnik ne postoji"));
 
         if (teacher.getRole() != Role.TEACHER) {
             throw new ForbiddenException("Pristup je dozvoljen samo nastavnicima");
         }
+
+        return teacher;
+    }
+
+    // Sve gore + predaje taj predmet (403).
+    public Course requireAuthorizedCourse(String username, Long courseId) {
+        AppUser teacher = requireTeacher(username);
 
         if (!courseRepository.existsByIdAndTeachers_Id(courseId, teacher.getId())) {
             throw new ForbiddenException("Nastavnik ne predaje ovaj predmet");

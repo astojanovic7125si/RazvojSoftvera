@@ -70,6 +70,13 @@ public class TeacherExamSetupService {
             throw new BadRequestException("Kraj termina mora biti posle početka termina");
         }
 
+        // termin mora biti unutar datuma ispitnog roka
+        if (request.startTime().toLocalDate().isBefore(period.getStartDate())
+                || request.endTime().toLocalDate().isAfter(period.getEndDate())) {
+            throw new BadRequestException("Termin mora biti unutar ispitnog roka ("
+                    + period.getStartDate() + " do " + period.getEndDate() + ")");
+        }
+
         ExamSession session = examSessionRepository.save(new ExamSession(
                 course, period, request.startTime(), request.endTime(), request.maxPoints()
         ));
